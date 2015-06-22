@@ -10,6 +10,7 @@ function start_loading_apg_mesh (url) {
 	var vao = vao_ext.createVertexArrayOES ();
 	vao.is_loaded = false;
 	vao.pc = 0;
+	vao.brad = 0.0;
 
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open ("GET", url, true);
@@ -63,6 +64,9 @@ function start_loading_apg_mesh (url) {
 							}
 						}
 						break;
+					case "@bounding_radius":
+						vao.brad = parseFloat (line_tokens[1]);
+						break;
 					default:
 				}
 			}
@@ -83,7 +87,7 @@ function start_loading_apg_mesh (url) {
 		var htmlarea = document.getElementById ("mesh_info");
 		htmlarea.innerHTML = url + "<br />vertices: " + vao.pc + "<br />faces: " +
 			vao.pc / attribs_data[0].comps + "<br />bones: " + 0 +
-			"<br />animations: " + 0;
+			"<br />animations: " + 0 + "<br />bounding radius: " + vao.brad;
 	}
 	xmlhttp.send ();
 	return vao;
