@@ -1,0 +1,59 @@
+<!-- WebGL .apg Viewer
+Anton Gerdelan 22 Jun 2015
+antongerdelan.net -->
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>WebGL .apg Viewer - Anton Gerdelan</title>
+</head>
+<body onload="main()" style="font-family:monospace;">
+<table><tr><td>
+<canvas id="canvas" width=512 height=512></canvas>
+</td><td id="mesh_info">
+mesh info
+</td></tr></table>
+</body>
+</html>
+
+<script id="test.vert" type="text/glsl">
+attribute vec3 vp;
+attribute vec2 vt;
+attribute vec3 vn;
+
+uniform mat4 PV, M;
+
+varying vec2 st;
+varying vec3 n;
+
+void main () {
+	st = vt;
+	n = vec3 (PV * M * vec4 (vn, 0.0));
+	gl_Position = PV * M * vec4 (vp, 1.0);
+}
+</script>
+
+<script id="test.frag" type="text/glsl">
+precision mediump float;
+
+varying vec2 st;
+varying vec3 n;
+uniform sampler2D dm;
+
+void main () {
+	vec4 texel = texture2D (dm, st);
+
+	vec3 nn = normalize (n);
+	vec3 fwd = normalize (vec3 (0.0, 0.0, -1.0));
+
+	gl_FragColor = texel;
+
+	gl_FragColor.rgb = gl_FragColor.rgb * dot (nn, fwd) * 0.7 + 0.3 *
+		gl_FragColor.rgb;
+}
+</script>
+
+<script src="js/main.js"></script>
+<script src="js/apg_parser.js"></script>
+<script src="js/maths_funcs.js"></script>
