@@ -7,9 +7,6 @@ An indexed version might be worth making.
 Online preview: http://antongerdelan.net/webgl_apg_viewer/
 
 ##TODO
-* parsing the per-vertex tangents (and normal mapping in demo)
-* parsing the per-vertex bone ids
-* parsing the skeleton structure
-* parsing the animation
-* animation functions in JS
-* animating in shaders
+* normal mapping in demo
+* full recursive animation function
+* translations and scale in animation function
