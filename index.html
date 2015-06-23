@@ -58,6 +58,49 @@ void main () {
 }
 </script>
 
+<script id="skinned.vert" type="text/glsl">
+attribute vec3 vp;
+attribute vec2 vt;
+attribute vec3 vn;
+attribute vec4 vtan;
+attribute float vb;
+
+uniform mat4 PV, M;
+uniform mat4 bone_mats[32];
+
+varying vec2 st;
+varying vec3 n;
+varying float bi;
+
+void main () {
+	bi = vb;
+	st = vt;
+	n = vec3 (PV * M * vec4 (vn, 0.0));
+	gl_Position = PV * M * bone_mats[int (vb)] * vec4 (vp, 1.0);
+}
+</script>
+
+<script id="skinned.frag" type="text/glsl">
+precision mediump float;
+
+varying vec2 st;
+varying vec3 n;
+varying float bi;
+uniform sampler2D dm;
+
+void main () {
+	vec4 texel = texture2D (dm, st);
+
+	vec3 nn = normalize (n);
+	vec3 fwd = normalize (vec3 (0.0, 0.0, -1.0));
+
+	gl_FragColor = texel;
+
+	gl_FragColor.rgb = gl_FragColor.rgb * dot (nn, fwd) * 0.7 + 0.3 *
+		gl_FragColor.rgb;
+}
+</script>
+
 <script src="js/main.js"></script>
 <script src="js/apg_parser.js"></script>
 <script src="js/maths_funcs.js"></script>

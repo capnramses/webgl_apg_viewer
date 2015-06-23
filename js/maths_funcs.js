@@ -505,3 +505,46 @@ function quat_to_mat4 (q) {
 	return m;
 }
 
+function dot_versor (q, r) {
+	return q[0] * r[0] + q[1] * r[1] + q[2] * r[2] + q[3] * r[3];
+}
+
+// spherical linear interpolation between two quaternions
+// factor t between 0.0 and 1.0
+// returns interpolated versor
+function slerp (q, r, t) {
+	// angle between q0-q1
+	var cos_half_theta = dot_versor (q, r);
+	// as found here http://stackoverflow.com/questions/2886606/flipping-issue-when-interpolating-rotations-using-quaternions
+	// if dot product is negative then one quaternion should be negated, to make
+	// it take the short way around, rather than the long way
+	// yeah! and furthermore Susan, I had to recalculate the d.p. after this
+	if (cos_half_theta < 0.0) {
+		for (var i = 0; i < 4; i++) {
+			q[i] *= -1.0;
+		}
+		cos_half_theta = dot_versor (q, r);
+	}
+	// if qa=qb or qa=-qb then theta = 0 and we can return qa
+	if (Math.abs (cos_half_theta) >= 1.0) {
+		return q;
+	}
+	// Calculate temporary values
+	var sin_half_theta = Math.sqrt (1.0 - cos_half_theta * cos_half_theta);
+	// if theta = 180 degrees then result is not fully defined
+	// we could rotate around any axis normal to qa or qb
+	var result = [];
+	if (Math.abs (sin_half_theta) < 0.001) {
+		for (var i = 0; i < 4; i++) {
+			result[i] = (1.0 - t) * q[i] + t * r[i];
+		}
+		return result;
+	}
+	var half_theta = Math.acos (cos_half_theta);
+	var a = Math.sin ((1.0 - t) * half_theta) / sin_half_theta;
+	var b = Math.sin (t * half_theta) / sin_half_theta;
+	for (var i = 0; i < 4; i++) {
+		result[i] = q[i] * a + r[i] * b;
+	}
+	return result;
+}
