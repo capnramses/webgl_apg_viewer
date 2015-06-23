@@ -264,7 +264,8 @@ function draw (elapsed_s) {
 		//gl.uniformMatrix4fv (skinned_M_loc, gl.FALSE, new Float32Array (M));
 		anim_timer += elapsed_s;
 		if (anim_timer >= cube_vao.animations[0].duration) {
-			anim_timer -= cube_vao.animations[0].duration;
+			anim_timer = 0.0; // doing this because if you lose focuse it gets massive
+			// and subtracting duration can still leave it too big cube_vao.animations[0].duration;
 		}
 		anim_recurse (cube_vao);
 	}
