@@ -10,3 +10,11 @@ Online preview: http://antongerdelan.net/webgl_apg_viewer/
 * normal mapping in demo
 * full recursive animation function
 * translations and scale in animation function
+* a pass at the end of the parser that informs each node what its children are
+```
+for all nodes
+if has parent
+add self to parent's children list
+```
+* possibly also make a list of parentless nodes, to make parent-child animation
+quicker from these as starting points
